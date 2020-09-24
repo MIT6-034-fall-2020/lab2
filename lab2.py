@@ -105,7 +105,8 @@ def heuristic_connectfour(board, is_current_player_maximizer):
         4: 100,
         3: 100,
         2: 50,
-        1: 25
+        1: 25,
+        0: 0
         }
         for chain in chains:
             score += conversion[len(chain)]
@@ -116,7 +117,6 @@ def heuristic_connectfour(board, is_current_player_maximizer):
     else:
         return heuristic
 
-    raise NotImplementedError
 
 # Now we can create AbstractGameState objects for Connect Four, using some of
 # the functions you implemented above.  You can use the following examples to
