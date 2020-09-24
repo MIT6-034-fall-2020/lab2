@@ -110,12 +110,13 @@ def heuristic_connectfour(board, is_current_player_maximizer):
         }
         for chain in chains:
             score += conversion[len(chain)]
+        return score
 
     heuristic = score(current_player_chain) - score(other_player_chain)
     if is_current_player_maximizer:
-        return (-1*heuristic)
-    else:
         return heuristic
+    else:
+        return -1*heuristic
 
 
 # Now we can create AbstractGameState objects for Connect Four, using some of
@@ -151,7 +152,32 @@ def dfs_maximizing(state) :
      0. the best path (a list of AbstractGameState objects),
      1. the score of the leaf node (a number), and
      2. the number of static evaluations performed (a number)"""
-    raise NotImplementedError
+
+    # queue will track state, the path so far, and evaluations
+    queue = [[state, [state], 0]]
+
+    # has the best option thus far
+    best = [state, [state], 0]
+
+    # Loops till queue exhausted
+    while queue:
+        # Check if at leaf node and pop element
+        if queue[0][0].is_game_over():
+            if queue[0][0].get_endgame_score() > best[0].get_endgame_score():
+                best = queue[0]
+            queue.pop(0) 
+        else:
+            # pop and replace the first elements of the queue
+            possible_states = queue[0][0].generate_next_states()
+            steps_so_far = queue[0][1]
+            evaluations = queue[0][2] + 1
+            queue.pop(0)
+            for s in possible_states:
+                new_steps = steps_so_far.copy()
+                new_steps.append(s)
+                queue = [[s, new_steps, evaluations]] + queue
+
+    return best
 
 
 # Uncomment the line below to try your dfs_maximizing on an
