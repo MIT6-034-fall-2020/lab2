@@ -13,27 +13,109 @@ INF = float('inf')
 
 def is_game_over_connectfour(board):
     """Returns True if game is over, otherwise False."""
-    raise NotImplementedError
+    
+    # Check if there's a chain greater than 4
+    chains = board.get_all_chains()
+    for chain in chains:
+        if len(chain) >= 4:
+            return True
+
+    # Check if columns are filled
+    filled = []
+    for col in range(board.num_cols):
+        filled.append(board.is_column_full(col))
+
+    if False not in filled:
+        return True
+
+    return False
 
 def next_boards_connectfour(board):
     """Returns a list of ConnectFourBoard objects that could result from the
     next move, or an empty list if no moves can be made."""
-    raise NotImplementedError
+    
+    # Check if game over
+    if is_game_over_connectfour(board):
+        return []
+
+    # Iterate through columns
+    next_boards = []
+    for col in range(board.num_cols):
+        if not board.is_column_full(col):
+            next_boards.append(board.add_piece(col))
+
+    return next_boards
 
 def endgame_score_connectfour(board, is_current_player_maximizer):
     """Given an endgame board, returns 1000 if the maximizer has won,
     -1000 if the minimizer has won, or 0 in case of a tie."""
-    raise NotImplementedError
+    
+    # Check if there's a chain of 4
+    chains = board.get_all_chains()
+    for chain in chains:
+        if len(chain) >= 4:
+            if is_current_player_maximizer:
+                return -1000
+            else:
+                return 1000
+    # tie otherwise
+    return 0
+
 
 def endgame_score_connectfour_faster(board, is_current_player_maximizer):
     """Given an endgame board, returns an endgame score with abs(score) >= 1000,
     returning larger absolute scores for winning sooner."""
-    raise NotImplementedError
+    
+    # Score function: (1000 + col*rows*100) - (pieces used)*100
+    max_score = 1000 + board.num_rows*board.num_cols*100
+    used_pieces = board.count_pieces()
+
+    # Check if there's a chain of 4
+    chains = board.get_all_chains()
+    for chain in chains:
+        if len(chain) >= 4:
+            score = max_score - used_pieces*100
+            if is_current_player_maximizer:
+                return (-1*score)
+            else:
+                return score
+    # tie otherwise
+    return 0
+
 
 def heuristic_connectfour(board, is_current_player_maximizer):
     """Given a non-endgame board, returns a heuristic score with
     abs(score) < 1000, where higher numbers indicate that the board is better
     for the maximizer."""
+
+    current_player_chain = board.get_all_chains(current_player=True)
+    other_player_chain = board.get_all_chains(current_player=False)
+
+    """
+    Score algorithm:
+    Give length of chain a weight
+    Multiple by the number of chains of certain length
+    Get raw score 
+    
+    Compare raw score between players
+    """
+    def score(chains):
+        score = 0
+        conversion = {
+        4: 100,
+        3: 100,
+        2: 50,
+        1: 25
+        }
+        for chain in chains:
+            score += conversion[len(chain)]
+
+    heuristic = score(current_player_chain) - score(other_player_chain)
+    if is_current_player_maximizer:
+        return (-1*heuristic)
+    else:
+        return heuristic
+
     raise NotImplementedError
 
 # Now we can create AbstractGameState objects for Connect Four, using some of
