@@ -154,15 +154,19 @@ def dfs_maximizing(state) :
      2. the number of static evaluations performed (a number)"""
 
     # queue will track state, the path so far, and evaluations
-    queue = [[state, [state], 0]]
+    queue = [[state, [state]]]
 
     # has the best option thus far
-    best = [state, [state], 0]
+    best = []
+    evaluations_count = 0
 
     # Loops till queue exhausted
     while queue:
         # Check if at leaf node and pop element
         if queue[0][0].is_game_over():
+            evaluations_count += 1
+            if not best: 
+                best = queue[0]
             if queue[0][0].get_endgame_score() > best[0].get_endgame_score():
                 best = queue[0]
             queue.pop(0) 
@@ -170,21 +174,19 @@ def dfs_maximizing(state) :
             # pop and replace the first elements of the queue
             possible_states = queue[0][0].generate_next_states()
             steps_so_far = queue[0][1]
-            evaluations = queue[0][2] + 1
             queue.pop(0)
             for s in possible_states:
                 new_steps = steps_so_far.copy()
                 new_steps.append(s)
-                queue = [[s, new_steps, evaluations]] + queue
+                queue = [[s, new_steps]] + queue
 
-    return best
+    return (best[1], best[0].get_endgame_score(), evaluations_count)
 
 
 # Uncomment the line below to try your dfs_maximizing on an
 # AbstractGameState representing the games tree "GAME1" from toytree.py:
 
-# pretty_print_dfs_type(dfs_maximizing(GAME1))
-
+pretty_print_dfs_type(dfs_maximizing(GAME1))
 
 def minimax_endgame_search(state, maximize=True) :
     """Performs minimax search, searching all leaf nodes and statically
