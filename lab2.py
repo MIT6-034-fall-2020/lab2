@@ -153,48 +153,69 @@ def dfs_maximizing(state) :
      1. the score of the leaf node (a number), and
      2. the number of static evaluations performed (a number)"""
 
-    # queue will track state, and the path so far
-    queue = [[state, [state]]]
+    if state.is_game_over():
+        return([state], state.get_endgame_score(), 1)
+    else:
+        next_states = state.generate_next_states()
 
-    # has the best option thus far
-    best = []
-    evaluations_count = 0
+        branches = list(map(dfs_maximizing, next_states))        # recursion
+        best_path = max(branches, key=lambda x: x[1])           # based on score
+        eval_count = sum(branch[2] for branch in branches)      # total # of evaluations
 
-    # Loops till queue exhausted
-    while queue:
-        # Check if at leaf node and pop element
-        if queue[0][0].is_game_over():
-            evaluations_count += 1
-            if not best: 
-                best = queue[0]
-            if queue[0][0].get_endgame_score() > best[0].get_endgame_score():
-                best = queue[0]
-            queue.pop(0) 
-        else:
-            # pop and replace the first elements of the queue
-            possible_states = queue[0][0].generate_next_states()
-            steps_so_far = queue[0][1]
-            queue.pop(0)
+        return ([state] + best_path[0], best_path[1], eval_count)
 
-            new_states = []
-            for s in possible_states:
-                new_steps = steps_so_far.copy()
-                new_steps.append(s)
-                new_states.append([s, new_steps])
+    # # queue will track state, and the path so far
+    # queue = [[state, [state]]]
 
-            queue = new_states + queue
+    # # has the best option thus far
+    # best = []
+    # evaluations_count = 0
 
-    return (best[1], best[0].get_endgame_score(), evaluations_count)
+    # # Loops till queue exhausted
+    # while queue:
+    #     # Check if at leaf node and pop element
+    #     if queue[0][0].is_game_over():
+    #         evaluations_count += 1
+    #         if not best: 
+    #             best = queue[0]
+    #         if queue[0][0].get_endgame_score() > best[0].get_endgame_score():
+    #             best = queue[0]
+    #         queue.pop(0) 
+    #     else:
+    #         # pop and replace the first elements of the queue
+    #         possible_states = queue[0][0].generate_next_states()
+    #         steps_so_far = queue[0][1]
+    #         queue.pop(0)
+
+    #         new_states = []
+    #         for s in possible_states:
+    #             new_steps = steps_so_far.copy()
+    #             new_steps.append(s)
+    #             new_states.append([s, new_steps])
+
+    #         queue = new_states + queue
+
+    # return (best[1], best[0].get_endgame_score(), evaluations_count)
 
 
 # Uncomment the line below to try your dfs_maximizing on an
 # AbstractGameState representing the games tree "GAME1" from toytree.py:
-# pretty_print_dfs_type(dfs_maximizing(GAME1))
+pretty_print_dfs_type(dfs_maximizing(GAME1))
 
 def minimax_endgame_search(state, maximize=True) :
     """Performs minimax search, searching all leaf nodes and statically
     evaluating all endgame scores.  Same return type as dfs_maximizing."""
-    
+    raise NotImplementedError
+
+    if state.is_game_over():
+        return ([state], state.get_endgame_score(not maximize), 1)
+    else:
+        next_states = state.generate_next_states()
+        
+        decision = []
+        for state in next_states:
+            path, score, eval_count = search(state, not maximize)
+
     # queue will track state, the path so far, and minimax player
     queue = [[state, [state], maximize]]
 
@@ -208,24 +229,33 @@ def minimax_endgame_search(state, maximize=True) :
         if queue[0][0].is_game_over():
             evaluations_count += 1
             player = queue[0][2]
-
+            score = queue[0][0].get_endgame_score(player)
+            new_option = queue[0] + [score]
 
             if not best: 
-                best = queue[0]
-            if maximize:
-                if player: # both true and true
-                    if queue[0][0].get_endgame_score() > best[0].get_endgame_score():
-                        best = queue[0]
-                else:
-                    if queue[0][0].get_endgame_score() < best[0].get_endgame_score():
-                        best = queue[0] 
+                best = new_option
+            if player:
+                if score > best[3]:
+                    best = new_option
             else:
-                if not player: # both false and false
-                    if queue[0][0].get_endgame_score() < best[0].get_endgame_score():
-                        best = queue[0] 
-                else:
-                    if queue[0][0].get_endgame_score() > best[0].get_endgame_score():
-                        best = queue[0]
+                if score < best[3]:
+                    best = new_option
+
+
+            # if maximize:
+            #     if player: # both true and true
+            #         if queue[0][0].get_endgame_score(player) > best[3]:
+            #             best = new_option
+            #     else:
+            #         if queue[0][0].get_endgame_score(player) < best[3]:
+            #             best = new_option 
+            # else:
+            #     if not player: # both false and false
+            #         if queue[0][0].get_endgame_score(player) < best[3]:
+            #             best = new_option 
+            #     else:
+            #         if queue[0][0].get_endgame_score(player) > best[3]:
+            #             best = new_option
 
             # if player == True and maximize == True:
             #     if queue[0][0].get_endgame_score() > best[0].get_endgame_score():
@@ -259,7 +289,7 @@ def minimax_endgame_search(state, maximize=True) :
 # Uncomment the line below to try your minimax_endgame_search on an
 # AbstractGameState representing the ConnectFourBoard "NEARLY_OVER" from boards.py:
 
-pretty_print_dfs_type(minimax_endgame_search(state_NEARLY_OVER))
+# pretty_print_dfs_type(minimax_endgame_search(state_NEARLY_OVER))
 
 
 def minimax_search(state, heuristic_fn=always_zero, depth_limit=INF, maximize=True) :
