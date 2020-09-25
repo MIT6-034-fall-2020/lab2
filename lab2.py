@@ -277,14 +277,67 @@ def minimax_search_alphabeta(state, alpha=-INF, beta=INF, heuristic_fn=always_ze
 # depth_limit=4. Compare with the number of evaluations from minimax_search for
 # different values of depth_limit.
 
-# pretty_print_dfs_type(minimax_search_alphabeta(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=4))
+# pretty_print_dfs_type(minimax_search_alphabeta(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=0))
 
 
 def progressive_deepening(state, heuristic_fn=always_zero, depth_limit=INF,
                           maximize=True) :
     """Runs minimax with alpha-beta pruning. At each level, updates anytime_value
     with the tuple returned from minimax_search_alphabeta. Returns anytime_value."""
-    raise NotImplementedError
+    """
+    Algorithm: minimax at each depth return that before going next level, start from same node
+    https://piazza.com/class/kdyp7ljiti778l?cid=323
+    """
+    # raise NotImplementedError
+
+    value = AnytimeValue()
+
+    # do depth 0 first
+    value.set_value(minimax_search_alphabeta(state,
+        depth_limit = 0, 
+        heuristic_fn=heuristic_fn, 
+        maximize=maximize))    
+
+    # iterate through the levels
+    depth = 1
+    while depth <= depth_limit:
+        next_level = minimax_search_alphabeta(state, depth_limit=depth, maximize=maximize)
+        curr_level = value.get_value()
+
+        if maximize:
+            new_value = max(curr_level, next_level, key = lambda x: x[1])
+        else:
+            new_value = min(curr_level, next_level, key = lambda x: x[1])
+
+        value.set_value(new_value)
+
+    return value
+
+
+    # # Do depth 0 first
+    # value.set_value(minimax_search_alphabeta(state,
+    #     depth_limit = 0, 
+    #     heuristic_fn=heuristic_fn, 
+    #     maximize=maximize))
+
+    # current_level = 1
+    # while current_level < depth_limit:
+    #     curr_state = value.get_value()[0][-1]
+    #     next_states = curr_state.generate_next_states()
+    #     n = len(next_states)
+
+    #     branches = list(map(minimax_search_alphabeta, next_states, n*[-INF], n*[INF], n*[heuristic_fn], n*[current_level], n*[not maximize]))
+
+    #     if maximize:
+    #         best_path = max(branches, key = lambda x: x[1])
+    #     else:
+    #         best_path = min(branches, key = lambda x: x[1])
+
+    #     value.set_value(best_path)
+    #     current_level += 1
+
+    # return value
+
 
 
 # Uncomment the line below to try progressive_deepening with "BOARD_UHOH" and
