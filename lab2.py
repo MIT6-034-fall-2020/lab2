@@ -288,7 +288,6 @@ def progressive_deepening(state, heuristic_fn=always_zero, depth_limit=INF,
     Algorithm: minimax at each depth return that before going next level, start from same node
     https://piazza.com/class/kdyp7ljiti778l?cid=323
     """
-    # raise NotImplementedError
 
     value = AnytimeValue()
 
@@ -312,31 +311,6 @@ def progressive_deepening(state, heuristic_fn=always_zero, depth_limit=INF,
         value.set_value(new_value)
 
     return value
-
-
-    # # Do depth 0 first
-    # value.set_value(minimax_search_alphabeta(state,
-    #     depth_limit = 0, 
-    #     heuristic_fn=heuristic_fn, 
-    #     maximize=maximize))
-
-    # current_level = 1
-    # while current_level < depth_limit:
-    #     curr_state = value.get_value()[0][-1]
-    #     next_states = curr_state.generate_next_states()
-    #     n = len(next_states)
-
-    #     branches = list(map(minimax_search_alphabeta, next_states, n*[-INF], n*[INF], n*[heuristic_fn], n*[current_level], n*[not maximize]))
-
-    #     if maximize:
-    #         best_path = max(branches, key = lambda x: x[1])
-    #     else:
-    #         best_path = min(branches, key = lambda x: x[1])
-
-    #     value.set_value(best_path)
-    #     current_level += 1
-
-    # return value
 
 
 
