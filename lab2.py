@@ -225,14 +225,116 @@ def minimax_search(state, heuristic_fn=always_zero, depth_limit=INF, maximize=Tr
 # Uncomment the line below to try minimax_search with "BOARD_UHOH" and
 # depth_limit=1. Try increasing the value of depth_limit to see what happens:
 
-# pretty_print_dfs_type(minimax_endgame_search(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=1))
+# pretty_print_dfs_type(minimax_search(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=5))
 
 
 def minimax_search_alphabeta(state, alpha=-INF, beta=INF, heuristic_fn=always_zero,
                              depth_limit=INF, maximize=True) :
     """"Performs minimax with alpha-beta pruning. Same return type 
     as dfs_maximizing."""
-    raise NotImplementedError
+    # Score becomes alpha or beta and is used to do comparsions
+
+    # base case: end state
+    if state.is_game_over():
+        return([state], state.get_endgame_score(maximize), 1)
+    elif depth_limit == 0:
+        return([state], heuristic_fn(state.get_snapshot(), maximize), 1)
+    else:
+        next_states = state.generate_next_states()
+        n = len(next_states)
+
+
+        if maximize:
+            eval_count = 0
+            for state in next_states:
+                child = minimax_search_alphabeta(state, alpha, beta, heuristic_fn, depth_limit-1, not maximize)
+                eval_count += child[2]
+                alpha = max(alpha, child[1])
+                if alpha >= beta:
+                    break 
+            return([state], alpha, eval_count)
+        
+        else:
+            eval_count = 0
+            for state in next_states:
+                child = minimax_search_alphabeta(state, alpha, beta, heuristic_fn, depth_limit-1, not maximize)
+                eval_count += child[2]
+                beta = min(beta, child[1])
+                if alpha >= beta:
+                    break 
+            return([state], beta, eval_count)
+        
+
+
+
+    #     if maximize:
+    #         best_path = max(branches, key=lambda x: x[1])       # maximizer wants highest score
+    #     else:
+    #         best_path = min(branches, key=lambda x: x[1])                           
+    #     eval_count = sum(branch[2] for branch in branches)      # minimizer wants lowest score 
+
+    #     return ([state] + best_path[0], best_path[1], eval_count)
+
+
+
+
+
+
+
+    # # base case: end state
+    # if state.is_game_over():
+    #     return([state], state.get_endgame_score(maximize), 1)
+    # elif depth_limit == 0:
+    #     return([state], heuristic_fn(state.get_snapshot(), maximize), 1)
+    # else:
+    #     next_states = state.generate_next_states()
+    #     n = len(next_states)
+
+    #     # Need to flip between players
+    #     branches = list(map(minimax_search_alphabeta, next_states, n*[heuristic_fn], n*[depth_limit-1], n*[not maximize]))      
+    #     if maximize:
+    #         best_path = max(branches, key=lambda x: x[1])       # maximizer wants highest score
+    #     else:
+    #         best_path = min(branches, key=lambda x: x[1])                           
+    #     eval_count = sum(branch[2] for branch in branches)      # minimizer wants lowest score 
+
+    #     return ([state] + best_path[0], best_path[1], eval_count)
+
+
+
+
+
+    # # base case: end state
+    # if state.is_game_over():
+    #     return([state], state.get_endgame_score(maximize), 1)
+    # elif depth_limit == 0:
+    #     return([state], heuristic_fn(state.get_snapshot(), maximize), 1)
+    # else:
+    #     next_states = state.generate_next_states()
+    #     n = len(next_states)
+
+
+    #     if maximize:
+    #         for state in next_states:
+    #             alpha = max(alpha, 
+    #                 minimax_search_alphabeta(state, alpha, beta, heuristic_fn, depth_limit-1, not maximize))
+    #             if alpha >= beta:
+    #                 break 
+    #     else:
+    #         for stata in next_states:
+    #             beta = min(beta, 
+    #                 minimax_search_alphabeta(state, alpha, beta, heuristic_fn, depth_limit-1, not maximize))
+    #             if beta <= alpha:
+    #                 break
+
+    #     if maximize:
+    #         best_path = max(branches, key=lambda x: x[1])       # maximizer wants highest score
+    #     else:
+    #         best_path = min(branches, key=lambda x: x[1])                           
+    #     eval_count = sum(branch[2] for branch in branches)      # minimizer wants lowest score 
+
+    #     return ([state] + best_path[0], best_path[1], eval_count)
+
 
 
 # Uncomment the line below to try minimax_search_alphabeta with "BOARD_UHOH" and
