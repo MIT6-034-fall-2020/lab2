@@ -233,7 +233,9 @@ def minimax_search_alphabeta(state, alpha=-INF, beta=INF, heuristic_fn=always_ze
     """"Performs minimax with alpha-beta pruning. Same return type 
     as dfs_maximizing."""
     # Score becomes alpha or beta and is used to do comparsions
-
+    # https://piazza.com/class/kdyp7ljiti778l?cid=378
+    # Double check tree logic 
+    
     # base case: end state
     if state.is_game_over():
         return([state], state.get_endgame_score(maximize), 1)
@@ -246,23 +248,28 @@ def minimax_search_alphabeta(state, alpha=-INF, beta=INF, heuristic_fn=always_ze
 
         if maximize:
             eval_count = 0
-            for state in next_states:
-                child = minimax_search_alphabeta(state, alpha, beta, heuristic_fn, depth_limit-1, not maximize)
+            path = []
+            for s in next_states:
+                child = minimax_search_alphabeta(s, alpha, beta, heuristic_fn, depth_limit-1, not maximize)
                 eval_count += child[2]
+                if (child[1] > alpha):
+                    path = [state] + child[0]
                 alpha = max(alpha, child[1])
                 if alpha >= beta:
                     break 
-            return([state], alpha, eval_count)
-        
+            return(path, alpha, eval_count)
         else:
             eval_count = 0
-            for state in next_states:
-                child = minimax_search_alphabeta(state, alpha, beta, heuristic_fn, depth_limit-1, not maximize)
+            path = []
+            for s in next_states:
+                child = minimax_search_alphabeta(s, alpha, beta, heuristic_fn, depth_limit-1, not maximize)
                 eval_count += child[2]
+                if (child[1] < beta):
+                    path = [state] + child[0]
                 beta = min(beta, child[1])
                 if alpha >= beta:
                     break 
-            return([state], beta, eval_count)
+            return(path, beta, eval_count)
         
 
 
@@ -341,7 +348,7 @@ def minimax_search_alphabeta(state, alpha=-INF, beta=INF, heuristic_fn=always_ze
 # depth_limit=4. Compare with the number of evaluations from minimax_search for
 # different values of depth_limit.
 
-# pretty_print_dfs_type(minimax_search_alphabeta(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=4))
+pretty_print_dfs_type(minimax_search_alphabeta(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=4))
 
 
 def progressive_deepening(state, heuristic_fn=always_zero, depth_limit=INF,
