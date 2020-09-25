@@ -153,137 +153,42 @@ def dfs_maximizing(state) :
      1. the score of the leaf node (a number), and
      2. the number of static evaluations performed (a number)"""
 
+    # base case: end state
     if state.is_game_over():
         return([state], state.get_endgame_score(), 1)
     else:
         next_states = state.generate_next_states()
 
-        branches = list(map(dfs_maximizing, next_states))        # recursion
+        branches = list(map(dfs_maximizing, next_states))       # recursion
         best_path = max(branches, key=lambda x: x[1])           # based on score
         eval_count = sum(branch[2] for branch in branches)      # total # of evaluations
 
         return ([state] + best_path[0], best_path[1], eval_count)
 
-    # # queue will track state, and the path so far
-    # queue = [[state, [state]]]
-
-    # # has the best option thus far
-    # best = []
-    # evaluations_count = 0
-
-    # # Loops till queue exhausted
-    # while queue:
-    #     # Check if at leaf node and pop element
-    #     if queue[0][0].is_game_over():
-    #         evaluations_count += 1
-    #         if not best: 
-    #             best = queue[0]
-    #         if queue[0][0].get_endgame_score() > best[0].get_endgame_score():
-    #             best = queue[0]
-    #         queue.pop(0) 
-    #     else:
-    #         # pop and replace the first elements of the queue
-    #         possible_states = queue[0][0].generate_next_states()
-    #         steps_so_far = queue[0][1]
-    #         queue.pop(0)
-
-    #         new_states = []
-    #         for s in possible_states:
-    #             new_steps = steps_so_far.copy()
-    #             new_steps.append(s)
-    #             new_states.append([s, new_steps])
-
-    #         queue = new_states + queue
-
-    # return (best[1], best[0].get_endgame_score(), evaluations_count)
-
 
 # Uncomment the line below to try your dfs_maximizing on an
 # AbstractGameState representing the games tree "GAME1" from toytree.py:
-pretty_print_dfs_type(dfs_maximizing(GAME1))
+# pretty_print_dfs_type(dfs_maximizing(GAME1))
 
 def minimax_endgame_search(state, maximize=True) :
     """Performs minimax search, searching all leaf nodes and statically
     evaluating all endgame scores.  Same return type as dfs_maximizing."""
-    raise NotImplementedError
-
+    
+    # base case: end state
     if state.is_game_over():
-        return ([state], state.get_endgame_score(not maximize), 1)
+        return([state], state.get_endgame_score(maximize), 1)
     else:
         next_states = state.generate_next_states()
-        
-        decision = []
-        for state in next_states:
-            path, score, eval_count = search(state, not maximize)
 
-    # queue will track state, the path so far, and minimax player
-    queue = [[state, [state], maximize]]
-
-    # has the best option thus far
-    best = []
-    evaluations_count = 0
-
-    # Loops till queue exhausted
-    while queue:
-        # Check if at leaf node and pop element
-        if queue[0][0].is_game_over():
-            evaluations_count += 1
-            player = queue[0][2]
-            score = queue[0][0].get_endgame_score(player)
-            new_option = queue[0] + [score]
-
-            if not best: 
-                best = new_option
-            if player:
-                if score > best[3]:
-                    best = new_option
-            else:
-                if score < best[3]:
-                    best = new_option
-
-
-            # if maximize:
-            #     if player: # both true and true
-            #         if queue[0][0].get_endgame_score(player) > best[3]:
-            #             best = new_option
-            #     else:
-            #         if queue[0][0].get_endgame_score(player) < best[3]:
-            #             best = new_option 
-            # else:
-            #     if not player: # both false and false
-            #         if queue[0][0].get_endgame_score(player) < best[3]:
-            #             best = new_option 
-            #     else:
-            #         if queue[0][0].get_endgame_score(player) > best[3]:
-            #             best = new_option
-
-            # if player == True and maximize == True:
-            #     if queue[0][0].get_endgame_score() > best[0].get_endgame_score():
-            #         best = queue[0]
-            # elif player == False and maximize == False:
-            #     if queue[0][0].get_endgame_score() < best[0].get_endgame_score():
-
-
-            # queue[0][0].get_endgame_score() > best[0].get_endgame_score():
-            #     best = queue[0]
-            queue.pop(0) 
+        # Need to flip between players
+        branches = list(map(minimax_endgame_search, next_states, len(next_states)*[not maximize]))      
+        if maximize:
+            best_path = max(branches, key=lambda x: x[1])       # maximizer wants highest score
         else:
-            # pop and replace the first elements of the queue
-            possible_states = queue[0][0].generate_next_states()
-            steps_so_far = queue[0][1]
-            curr_player = queue[0][2]
-            queue.pop(0)
+            best_path = min(branches, key=lambda x: x[1])                           
+        eval_count = sum(branch[2] for branch in branches)      # minimizer wants lowest score 
 
-            new_states = []
-            for s in possible_states:
-                new_steps = steps_so_far.copy()
-                new_steps.append(s)
-                new_states.append([s, new_steps, not curr_player])
-            
-            queue = new_states + queue
-
-    return (best[1], best[0].get_endgame_score(maximize), evaluations_count)
-
+        return ([state] + best_path[0], best_path[1], eval_count)
 
 
 # Uncomment the line below to try your minimax_endgame_search on an
