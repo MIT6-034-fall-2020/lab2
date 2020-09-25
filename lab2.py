@@ -235,7 +235,7 @@ def minimax_search_alphabeta(state, alpha=-INF, beta=INF, heuristic_fn=always_ze
     # Score becomes alpha or beta and is used to do comparsions
     # https://piazza.com/class/kdyp7ljiti778l?cid=378
     # Double check tree logic 
-    
+
     # base case: end state
     if state.is_game_over():
         return([state], state.get_endgame_score(maximize), 1)
@@ -270,77 +270,6 @@ def minimax_search_alphabeta(state, alpha=-INF, beta=INF, heuristic_fn=always_ze
                 if alpha >= beta:
                     break 
             return(path, beta, eval_count)
-        
-
-
-
-    #     if maximize:
-    #         best_path = max(branches, key=lambda x: x[1])       # maximizer wants highest score
-    #     else:
-    #         best_path = min(branches, key=lambda x: x[1])                           
-    #     eval_count = sum(branch[2] for branch in branches)      # minimizer wants lowest score 
-
-    #     return ([state] + best_path[0], best_path[1], eval_count)
-
-
-
-
-
-
-
-    # # base case: end state
-    # if state.is_game_over():
-    #     return([state], state.get_endgame_score(maximize), 1)
-    # elif depth_limit == 0:
-    #     return([state], heuristic_fn(state.get_snapshot(), maximize), 1)
-    # else:
-    #     next_states = state.generate_next_states()
-    #     n = len(next_states)
-
-    #     # Need to flip between players
-    #     branches = list(map(minimax_search_alphabeta, next_states, n*[heuristic_fn], n*[depth_limit-1], n*[not maximize]))      
-    #     if maximize:
-    #         best_path = max(branches, key=lambda x: x[1])       # maximizer wants highest score
-    #     else:
-    #         best_path = min(branches, key=lambda x: x[1])                           
-    #     eval_count = sum(branch[2] for branch in branches)      # minimizer wants lowest score 
-
-    #     return ([state] + best_path[0], best_path[1], eval_count)
-
-
-
-
-
-    # # base case: end state
-    # if state.is_game_over():
-    #     return([state], state.get_endgame_score(maximize), 1)
-    # elif depth_limit == 0:
-    #     return([state], heuristic_fn(state.get_snapshot(), maximize), 1)
-    # else:
-    #     next_states = state.generate_next_states()
-    #     n = len(next_states)
-
-
-    #     if maximize:
-    #         for state in next_states:
-    #             alpha = max(alpha, 
-    #                 minimax_search_alphabeta(state, alpha, beta, heuristic_fn, depth_limit-1, not maximize))
-    #             if alpha >= beta:
-    #                 break 
-    #     else:
-    #         for stata in next_states:
-    #             beta = min(beta, 
-    #                 minimax_search_alphabeta(state, alpha, beta, heuristic_fn, depth_limit-1, not maximize))
-    #             if beta <= alpha:
-    #                 break
-
-    #     if maximize:
-    #         best_path = max(branches, key=lambda x: x[1])       # maximizer wants highest score
-    #     else:
-    #         best_path = min(branches, key=lambda x: x[1])                           
-    #     eval_count = sum(branch[2] for branch in branches)      # minimizer wants lowest score 
-
-    #     return ([state] + best_path[0], best_path[1], eval_count)
 
 
 
@@ -348,7 +277,7 @@ def minimax_search_alphabeta(state, alpha=-INF, beta=INF, heuristic_fn=always_ze
 # depth_limit=4. Compare with the number of evaluations from minimax_search for
 # different values of depth_limit.
 
-pretty_print_dfs_type(minimax_search_alphabeta(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=4))
+# pretty_print_dfs_type(minimax_search_alphabeta(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=4))
 
 
 def progressive_deepening(state, heuristic_fn=always_zero, depth_limit=INF,
