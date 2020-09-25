@@ -277,7 +277,7 @@ def minimax_search_alphabeta(state, alpha=-INF, beta=INF, heuristic_fn=always_ze
 # depth_limit=4. Compare with the number of evaluations from minimax_search for
 # different values of depth_limit.
 
-# pretty_print_dfs_type(minimax_search_alphabeta(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=0))
+# pretty_print_dfs_type(minimax_search_alphabeta(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=1))
 
 
 def progressive_deepening(state, heuristic_fn=always_zero, depth_limit=INF,
@@ -290,25 +290,13 @@ def progressive_deepening(state, heuristic_fn=always_zero, depth_limit=INF,
     """
 
     value = AnytimeValue()
-
-    # do depth 0 first
-    value.set_value(minimax_search_alphabeta(state,
-        depth_limit = 0, 
-        heuristic_fn=heuristic_fn, 
-        maximize=maximize))    
-
+ 
     # iterate through the levels
     depth = 1
     while depth <= depth_limit:
-        next_level = minimax_search_alphabeta(state, depth_limit=depth, maximize=maximize)
-        curr_level = value.get_value()
-
-        if maximize:
-            new_value = max(curr_level, next_level, key = lambda x: x[1])
-        else:
-            new_value = min(curr_level, next_level, key = lambda x: x[1])
-
-        value.set_value(new_value)
+        next_level = minimax_search_alphabeta(state, depth_limit=depth, heuristic_fn=heuristic_fn, maximize=maximize)
+        value.set_value(next_level)
+        depth += 1
 
     return value
 
@@ -318,7 +306,7 @@ def progressive_deepening(state, heuristic_fn=always_zero, depth_limit=INF,
 # depth_limit=4. Compare the total number of evaluations with the number of
 # evaluations from minimax_search or minimax_search_alphabeta.
 
-# progressive_deepening(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=4).pretty_print()
+# progressive_deepening(state_UHOH, heuristic_fn=heuristic_connectfour, depth_limit=2).pretty_print()
 
 
 # Progressive deepening is NOT optional. However, you may find that 
