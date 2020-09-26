@@ -322,20 +322,20 @@ if not TEST_PROGRESSIVE_DEEPENING:
 
 #### Part 3: Multiple Choice ###################################################
 
-ANSWER_1 = ''
+ANSWER_1 = '4' # Have to search every node if normal DFS
 
-ANSWER_2 = ''
+ANSWER_2 = '1' # The fourth most node is redunant after seeing the first two and comparing to 3rd
 
-ANSWER_3 = ''
+ANSWER_3 = '4' # depth is infinity so no heuristic needed, random helps here
 
-ANSWER_4 = ''
+ANSWER_4 = '5' # all other methods can be manipulated to Eve's advantage, Eve can't counter randomness
 
 
 #### SURVEY ###################################################
 
-NAME = None
-COLLABORATORS = None
-HOW_MANY_HOURS_THIS_LAB_TOOK = None
-WHAT_I_FOUND_INTERESTING = None
-WHAT_I_FOUND_BORING = None
-SUGGESTIONS = None
+NAME = 'Nabib Ahmed'
+COLLABORATORS = 'None - Individual Submission'
+HOW_MANY_HOURS_THIS_LAB_TOOK = '12'
+WHAT_I_FOUND_INTERESTING = 'Using tree and learning recusion!'
+WHAT_I_FOUND_BORING = 'Debugging when I had most of it figured out - 1 line changes'
+SUGGESTIONS = 'List relevant python tips, like this problem requires recursion, etc.'
